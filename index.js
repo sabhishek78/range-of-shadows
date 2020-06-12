@@ -5,36 +5,19 @@
 // Input: [[12, 15, 1, 6], [4, 11, 6, 3], [19, 11, 4, 2], [7, 6, 2, 2], [13, 8, 7, 2]]
 // Output: [[4, 10], [12, 23]]
 function shadow(rectangles) {
-  var boxes = [];
-  for (let i = 0; i < rectangles.length; i++) {
-    let temp = [];
-    temp.push(rectangles[i][0]);
-    temp.push(rectangles[i][0] + rectangles[i][2]);
-    boxes.push(temp);
-  }
-  // console.log(boxes);
-  boxes = boxes.sort((a, b) => a[0] - b[0]);
-  // console.log(boxes);
-  for (let i = 0; i < boxes.length - 1; i++) {
-    if (boxes[i][1] >= boxes[i + 1][0]) {
-      boxes = mergingBoxes(boxes, i);
-      //  console.log("after merge boxes=");
-      //  console.log(boxes);
-      i--;
+  let boxes=rectangles.map(([x, y, width, height])=>[x,x+width]);
+  boxes = boxes.sort(([start1,end1], [start2,end2]) => start1 - start2);
+  for (let boxNumber = 0; boxNumber < boxes.length - 1; boxNumber++) {
+    if (boxes[boxNumber][1] >= boxes[boxNumber + 1][0]) {
+      boxes = mergeBoxes(boxes, boxNumber);
+      boxNumber--;
     }
   }
   return boxes;
 }
-function mergingBoxes(boxes, i) {
-  //  console.log("merging boxes");
-  let temp = [];
-  temp.push(boxes[i][0]);
-  temp.push(boxes[i + 1][1] > boxes[i][1] ? boxes[i + 1][1] : boxes[i][1]);
-  boxes.splice(i, 2);
-
-  boxes.push(temp);
-  boxes = boxes.sort((a, b) => a[0] - b[0]);
-  //  console.log(boxes);
+function mergeBoxes(boxes,boxNumber) {
+  boxes.splice(boxNumber, 2,[boxes[boxNumber][0],boxes[boxNumber + 1][1] > boxes[boxNumber][1] ? boxes[boxNumber + 1][1] : boxes[boxNumber][1]]);
+ boxes = boxes.sort(([start1,end1], [start2,end2]) => start1 - start2);
   return boxes;
 }
 console.log(
